@@ -1,40 +1,20 @@
 public class Player implements Runnable {
     private static final int NUM_TURNS = 5;
 
-    private enum State {
-        A,B,C;
-    }
-    State state;
+    BellNote state;
 
-    public static void main(String[] args) {
-        // Create all the players, and give each a turn
-        final int numStates = State.values().length;
+    // TODO Player tells conductor when they are done
 
-        Player[] players = new Player[numStates];
-        for (State s : State.values()) {
-            players[s.ordinal()] = new Player(s);
-        }
-
-        for (int i = 0; i < NUM_TURNS; i++) {
-            for (Player p : players) {
-                p.giveTurn();
-            }
-        }
-        for (Player p : players) {
-            p.stopPlayer();
-        }
-    }
-
-    private final State myJob;
+    private final Note note;
     private final Thread t;
     private volatile boolean running;
     private boolean myTurn;
     private int turnCount;
 
-    Player(State myJob) {
-        this.myJob = myJob;
+    Player(Note note) {
+        this.note = note;
         turnCount = 1;
-        t = new Thread(this, myJob.name());
+        t = new Thread(this, String.valueOf(note));
         t.start();
     }
 
@@ -80,6 +60,6 @@ public class Player implements Runnable {
     }
 
     private void doTurn() {
-        System.out.println("Player[" + myJob.name() + "] taking turn " + turnCount);
+        System.out.println("Player[" + note.name() + "] taking turn " + turnCount);
     }
 }

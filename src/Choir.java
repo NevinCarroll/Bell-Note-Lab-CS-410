@@ -3,7 +3,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -15,6 +17,8 @@ public class Choir {
     // Mary had a little lamb
     private final List<BellNote> song = new ArrayList<>();
 
+    private Map<Note, Player> players = new HashMap<>();
+
     private final Conductor conductor;
     private final AudioFormat af;
 
@@ -23,6 +27,7 @@ public class Choir {
         this.af = af;
     }
 
+    // TODO Fix more exceptions
     private void loadNoteSheet(String filename) {
         BufferedReader noteReader = null;
         try {
@@ -83,15 +88,22 @@ public class Choir {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        final AudioFormat af =
-                new AudioFormat(Note.SAMPLE_RATE, 8, 1, true, false);
-        Choir choir = new Choir(af);
-        choir.loadNoteSheet(args[0]);
-        choir.playSong();
+    /**
+     * Create a player corresponding to each note in the song
+     */
+    void createPlayers() {
+        final int songNotes = 8;
+
+        for (Note note : Note.values()) {
+//            players.put();
+        }
     }
 
     void playSong() throws LineUnavailableException {
+
+        /* TODO While playing, go to the current note that needs to be played, notify that player, have him
+        * play that note, wait until done, then play the next note after they are done, do this until all
+        * */
         try (final SourceDataLine line = AudioSystem.getSourceDataLine(af)) {
             line.open();
             line.start();
@@ -108,5 +120,20 @@ public class Choir {
         final int length = Note.SAMPLE_RATE * ms / 1000;
         line.write(bn.note.sample(), 0, length);
         line.write(Note.REST.sample(), 0, 50);
+    }
+
+    /**
+     * Get notes in songs, to only create players that are for the song
+     */
+    private void getNotesInSong() {
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        final AudioFormat af =
+                new AudioFormat(Note.SAMPLE_RATE, 8, 1, true, false);
+        Choir choir = new Choir(af);
+        choir.loadNoteSheet(args[0]);
+        choir.playSong();
     }
 }
