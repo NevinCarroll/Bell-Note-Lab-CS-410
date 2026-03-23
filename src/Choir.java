@@ -40,7 +40,7 @@ public class Choir {
     /**
      * Reads the given file and stores the notes and note lengths into the song list, that will be played later.
      * @param filename Name of file to be read
-     * @return Whether reading note sheet is valid
+     * @return Whether an errors occurred when reading note sheet
      */
     private boolean loadNoteSheet(String filename) {
         // Read file into memory
@@ -71,7 +71,7 @@ public class Choir {
 
             // If line is not in two parts, then it is invalid
             if (parts.length != 2) {
-                System.err.println("Invalid amount of parts at line " + lineNum + ". Need to be two parts");
+                System.err.println("Invalid amount of parts at line " + lineNum + ". Need to be two parts separated by one space.");
                 errorLines.add(lineNum);
                 lineNum++;
                 continue;
@@ -102,7 +102,7 @@ public class Choir {
                 }
             }
 
-            // if note is note in enum, then line has error
+            // If note is not a note value in the enum, then the line has error
             if (note == null) {
                 System.err.println("Invalid note at line " + lineNum + ": " + noteString);
                 errorLines.add(lineNum);
@@ -145,7 +145,7 @@ public class Choir {
     }
 
     /**
-     * TODO
+     * TODO Finish
      * Create a player corresponding to each note in the song
      */
     void createPlayers() {
@@ -157,7 +157,7 @@ public class Choir {
     }
 
     /**
-     * TODO
+     * TODO Implement multithreading
      * Play song that was read from the text file
      */
     void playSong() {
@@ -181,8 +181,8 @@ public class Choir {
 
     /**
      * Play note given on the line
-     * @param line
-     * @param bn
+     * @param line Writes audio to output
+     * @param bn Note and length to be played
      */
     private void playNote(SourceDataLine line, BellNote bn) {
         final int ms = Math.min(bn.length.timeMs(), Note.MEASURE_LENGTH_SEC * 1000);
