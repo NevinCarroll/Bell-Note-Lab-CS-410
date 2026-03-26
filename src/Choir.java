@@ -158,22 +158,12 @@ public class Choir {
         for (BellNote bn: song) {
             player = players.get(bn.getNote());
             player.setNoteLength(bn.getNoteLength());
-            player.run();
+            player.startThread();
             player.waitToStop();
         }
     }
 
-    /**
-     * Play note given on the line
-     * @param line Writes audio to output
-     * @param bn Note and length to be played
-     */
-//    private void playNote(SourceDataLine line, BellNote bn) {
-//        final int ms = Math.min(bn.length.timeMs(), Note.MEASURE_LENGTH_SEC * 1000);
-//        final int length = Note.SAMPLE_RATE * ms / 1000;
-//        line.write(bn.note.sample(), 0, length);
-//        line.write(Note.REST.sample(), 0, 50);
-//    }
+
 
     public static void main(String[] args) {
         // Set up how notes will be played
