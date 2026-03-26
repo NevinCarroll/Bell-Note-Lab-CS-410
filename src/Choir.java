@@ -53,17 +53,17 @@ public class Choir {
         }
 
         String line; // Line to read
-        int lineNum = 1; // Index to locate line errors
-        ArrayList<Integer> errorLines = new ArrayList<>(); // Store every line with an error
+        int lineNum = 0; // Index to locate line errors
+        boolean hasError = false; // Store every line with an error
 
         // Run while there are no more lines to read
         while (true) {
+            lineNum++;
             try {
                 if ((line = noteReader.readLine()) == null) break; // Break out of loop when at final line
             } catch (IOException e) {
                 System.err.println("Error reading note: " + lineNum); // I/O error reading line
-                errorLines.add(lineNum);  // Add to list
-                lineNum++;
+                hasError = true;  // State that there was an error while reading
                 continue;
             }
 
@@ -72,8 +72,7 @@ public class Choir {
             // If line is not in two parts, then it is invalid
             if (parts.length != 2) {
                 System.err.println("Invalid amount of parts at line " + lineNum + ". Need to be two parts separated by one space.");
-                errorLines.add(lineNum);
-                lineNum++;
+                hasError = true;
                 continue;
             }
 
@@ -86,8 +85,7 @@ public class Choir {
                 noteLengthString = Integer.parseInt(parts[1]);
             } catch (NumberFormatException e) {
                 System.err.println("Invalid note length at line " + lineNum + ". Need to be an integer");
-                errorLines.add(lineNum);
-                lineNum++;
+                hasError = true;
                 continue;
             }
 
@@ -95,6 +93,7 @@ public class Choir {
             Note note = null;
 
             // Try to get note value from enum
+            // Enum.valueOf() TODO
             for (Note n : Note.values()) {
                 if (n.name().equals(noteString)) {
                     note = n;
@@ -105,8 +104,7 @@ public class Choir {
             // If note is not a note value in the enum, then the line has error
             if (note == null) {
                 System.err.println("Invalid note at line " + lineNum + ": " + noteString);
-                errorLines.add(lineNum);
-                lineNum++;
+                hasError = true;
                 continue;
             }
 
@@ -128,20 +126,18 @@ public class Choir {
                     noteLength = NoteLength.EIGHTH;
                     break;
                 default:
-                    errorLines.add(lineNum);
                     System.err.println("Invalid note length at line " + lineNum + ": " + noteLengthString);
-                    lineNum++;
+                    hasError = true;
                     continue;
             }
 
             // Make new bell note if everything has gone fine and add it into song
-            lineNum++;
             BellNote newNote = new BellNote(note, noteLength);
             song.add(newNote);
         }
 
-        // If error lines is empty, then there were no errors while reading the file, else there were errors
-        return !errorLines.isEmpty();
+        // Return stating whether there was an error
+        return hasError;
     }
 
     /**
@@ -198,14 +194,14 @@ public class Choir {
 
     }
 
-    public static void main(String[] args) throws LineUnavailableException {
+    public static void main(String[] args) {
         // Set up how notes will be played
         final AudioFormat af = new AudioFormat(Note.SAMPLE_RATE, 8, 1, true, false);
         Choir choir = new Choir(af);
-        boolean isError = choir.loadNoteSheet(args[0]); // Load song and check if note sheet is valid
+        boolean hasError = choir.loadNoteSheet(args[0]); // Load song and check if note sheet is valid
 
         // Play if there were no errors, else print that there was an error
-        if (isError) {
+        if (hasError) {
             System.err.println("Error loading note sheet: " + args[0]);
         } else {
             choir.playSong();
