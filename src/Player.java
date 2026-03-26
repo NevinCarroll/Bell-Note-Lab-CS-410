@@ -6,28 +6,19 @@ import javax.sound.sampled.SourceDataLine;
 public class Player implements Runnable {
     BellNote state;
 
-    // TODO Player tells conductor when they are done, but how do you pass note length
-
     private final Note note; // Note player will play
     private volatile NoteLength noteLength;
-    private final AudioFormat audioFormat;
     private final SourceDataLine sourceDataLine;
     private volatile Thread playerThread;
 
     Player(Note note, SourceDataLine sourceDataLine) {
         this.note = note;
         noteLength = NoteLength.WHOLE;
-        this.audioFormat = new AudioFormat(Note.SAMPLE_RATE, 8, 1, true, false);
-
-        this.sourceDataLine = sourceDataLine; // TODO, add proper error handling
-
+        this.sourceDataLine = sourceDataLine;
     }
 
     public void run() {
-        sourceDataLine.start();
         playNote();
-        sourceDataLine.stop();
-        sourceDataLine.drain();
     }
 
     public void setNoteLength(NoteLength noteLength) {
@@ -35,7 +26,7 @@ public class Player implements Runnable {
     }
 
     public void startThread() {
-        playerThread = new Thread(this);
+        playerThread = new Thread(this); // Create new thread, because threads can't be run more than once
         playerThread.start();
     }
 

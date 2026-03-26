@@ -45,7 +45,6 @@ public class Choir {
         createPlayers();
     }
 
-
     /**
      * Reads the given file and stores the notes and note lengths into the song list, that will be played later.
      * @param filename Name of file to be read
@@ -150,7 +149,6 @@ public class Choir {
     }
 
     /**
-     * TODO Finish
      * Create a player corresponding to each note
      */
     void createPlayers() {
@@ -168,14 +166,14 @@ public class Choir {
         * play that note, wait until done, then play the next note after they are done, do this until all
         * */
 
-        Player player = null;
-
         try {
             sourceDataLine.open();
         } catch (LineUnavailableException e) {
             System.err.println("Error while opening source data line.");
         }
+        sourceDataLine.start();
 
+        Player player = null;
         // Play every note in song
         for (BellNote bn: song) {
             player = players.get(bn.getNote());
@@ -184,10 +182,8 @@ public class Choir {
             player.waitToStop();
         }
 
-        sourceDataLine.close();
+        sourceDataLine.drain();
     }
-
-
 
     public static void main(String[] args) {
         // Set up how notes will be played
@@ -200,6 +196,5 @@ public class Choir {
         } else {
             choir.playSong();
         }
-
     }
 }
