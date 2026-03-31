@@ -158,13 +158,9 @@ public class Choir {
     }
 
     /**
-     * TODO Implement multithreading
      * Play song that was read from the text file
      */
     void playSong() {
-        /* TODO While playing, go to the current note that needs to be played, notify that player, have him
-        * play that note, wait until done, then play the next note after they are done, do this until all
-        * */
 
         try {
             sourceDataLine.open();

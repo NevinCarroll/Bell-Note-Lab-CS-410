@@ -1,6 +1,3 @@
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 public class Player implements Runnable {
@@ -8,8 +5,11 @@ public class Player implements Runnable {
 
     private final Note note; // Note player will play
     private volatile NoteLength noteLength;
+
     private final SourceDataLine sourceDataLine;
     private volatile Thread playerThread;
+
+    private volatile boolean myTurn;
 
     Player(Note note, SourceDataLine sourceDataLine) {
         this.note = note;
@@ -31,7 +31,7 @@ public class Player implements Runnable {
     }
 
     /**
-     * Play note given on the line
+     * Play note on the line
      */
     private void playNote() {
         final int ms = Math.min(noteLength.timeMs(), Note.MEASURE_LENGTH_SEC * 1000);
