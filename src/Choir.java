@@ -1,5 +1,3 @@
-import com.sun.source.doctree.SystemPropertyTree;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -50,7 +48,7 @@ public class Choir {
             sourceDataLineTemp = null;
         }
 
-        // Assign initialized audio line (may be null if initialization failed)
+        // Assign initialized audio line
         sourceDataLine = sourceDataLineTemp;
 
         if (sourceDataLine == null) {
